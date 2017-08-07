@@ -5,7 +5,8 @@ class DB {
 			$_query,
 			$_error = false,
 			$_results,
-			$_count = 0; 
+			$_count = 0,
+			$_lastid = 0; 
 
 	private function __construct(){
 		try {
@@ -95,10 +96,17 @@ class DB {
 			$sql = "INSERT INTO {$table} (`" . implode('`, `' , $keys) . "`) VALUES ({$values})";
 
 			if(!$this->query($sql, $fields)->error()){
-				return true;
+				$this->_lastid = $this->_pdo->lastInsertId();
+				$this->_error = false;
+				return $this;
 			}
+			$this->_error=true;
 		
-		return false;
+		return $this;
+	}
+
+	public function getlastid(){
+		return $this->_lastid;
 	}
 
 	public function update($table, $id, $fields, $col){

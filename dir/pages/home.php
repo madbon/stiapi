@@ -166,7 +166,7 @@ echo Input::get('image');
                     <div class="col-lg-8">
                         <form action="../pages/form_process.php" method="post" multipart="" enctype="multipart/form-data">
                             <div class="form-group">
-                                <textarea class="form-control"></textarea>
+                                <textarea class="form-control" name="caption"></textarea>
                             </div>
 <!--                            <button type="button" class="btn btn-outline btn-info btn-sm">Add Image</button>-->
                             <input type="file" name="img[]" class="form-control" multiple>

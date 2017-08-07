@@ -10,6 +10,18 @@ require '../core/init.php';
 //}else{
 //    die('File was not submitted');
 //}
+
+
+$user = DB::getInstance()->insert('tbl_newsfeed_post', array(
+    'CAPTION' => Input::get('caption')
+));
+if(!$user->error())
+{
+    $id = $user->getlastid();
+
+}
+
+
 $formdata = DB::getInstance();
 
 echo '<pre>';
@@ -17,14 +29,17 @@ $img = $_FILES['img'];
 
 if(!empty($img))
 {
-    $img_desc = reArrayFiles($img);
+    $img_desc = reArrayFiles($img); 
     print_r($img_desc);
     
     foreach($img_desc as $val)
     {
         $newname = date('YmdHis',time()).mt_rand().'.jpg';
+        
         move_uploaded_file($val['tmp_name'],'../img/'.$newname);
-        $stat = $formdata->update('tbl_rest_registration', 3,array('PHOTOS'=>$newname), 'REST_ID');
+        $stat = $formdata->insert('tbl_images',array('PATH'=>$newname,'POST_ID'=>$id));
+
+
         if($stat)
         {
             echo 'success';
