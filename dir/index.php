@@ -1,24 +1,5 @@
 <?php
 require_once 'core/init.php';
-
-if(Input::exists()){
-    $user = DB::getInstance()->insert('tbl_rest_registration', array(
-        'NAME'              =>  Input::get('Restname'),
-        'OWNER'             =>  Input::get('ownername'),
-        'CONTACT_INFO'      =>  Input::get('contactnumber'),
-        'BLOG_WEB_URL'      =>  Input::get('blogweburl'),
-        'HISTORY'           =>  Input::get('history'),
-        'CAPACITY_CHAIRS'   =>  Input::get('capacityofchairs'),
-        'COMP_ADDRESS'      =>  Input::get('completeaddress'),
-        'LAT'               =>  Input::get('latitude'),
-        'LONGI'             =>  Input::get('longitude'),
-        'USERNAME'          =>  Input::get('username'),
-        'PASSWORD'          =>  Input::encrptpw('password')
-
-    ));
-}
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,13 +22,13 @@ if(Input::exists()){
     <link href="responsivetools/bootstrap/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="responsivetools/bootstrap/css/css.css" rel="stylesheet" type="text/css">
     <link href="responsivetools/bootstrap/css/css2.css" rel="stylesheet" type="text/css">
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    
+    <!--  CSS for confirm  -->
+    <link rel="stylesheet" href="responsivetools/jquery-confirm/css/jquery-confirm.css" type="text/css">
+    <link rel="stylesheet" href="responsivetools/jquery-confirm/css/jquery-confirm.less" type="text/css">
+    <link rel="stylesheet" href="responsivetools/jquery-confirm/demo/libs/bundled.css" type="text/css">
+    <link rel="stylesheet" href="responsivetools/jquery-confirm/demo/demo.css">
+    
     <style>
          input.logininput
         {
@@ -94,7 +75,7 @@ if(Input::exists()){
                 <a class="navbar-brand" href="#page-top">  
                     <input type="text" placeholder="Username" id="username" class="logininput">   
                     <input type="Password" placeholder="Password" id="password" class="logininput">
-                    <button type="button" id="signin" class="loginbutton">Sign in</button>  
+                    <button type="button"  class="loginbutton example-p-1">Sign in</button>  
                 </a>
             </div>
 
@@ -259,7 +240,7 @@ if(Input::exists()){
                         <!--  Send Button -->
                          <div class="row">
                             <div class="form-group col-xs-12">
-                                <button type="submit" class="btn btn-success btn-lg">Send</button>
+                                <button type="submit" class="btn btn-success btn-lg sendbutton">Send</button>
                             </div>
                         </div>
                 </div>
@@ -292,24 +273,103 @@ if(Input::exists()){
     <!-- Theme JavaScript -->
     <script src="responsivetools/bootstrap/js/freelancer.min.js"></script>
 
+    <!--JS for Confirm-->
+    <script src="responsivetools/jquery-confirm/js/jquery-confirm.js"></script>
+    <script src="responsivetools/jquery-confirm/demo/demo.js"></script>
+    <script async src="responsivetools/jquery-confirm/js/sync-confirm.js"></script>
 
-<script>
+<script type="text/javascript">
 $(document).ready(function(){
-    $("#signin").click(function(){
-        var username = $("#username").val();
-        var password = $("#password").val();
+    // form send
+                       
+                        $('form').submit(function(){ 
+                            var self = this;
+                            $.confirm({
+                            title: '',
+                            content: 'Are you sure you want to submit it?',
+                            icon: 'fa fa-question-circle',
+                            animation: 'scale',
+                            closeAnimation: 'scale',
+                            opacity: 0.5,
+                            buttons: {
+                                'confirm': {
+                                    text: 'Proceed',
+                                    btnClass: 'btn-blue',
+                                    action: function () {
+                                         $.ajax({
 
-        if(username == "user" && password == "pass")
-        {
-            window.location.href = "pages/home.php";
-        }
-        else
-        {
-            
-        }
-    });
+                                                           type:'POST',
+                                                           url:'phpObjects/toRegisterResto.php',
+                                                           data: new FormData(self),
+                                                           processData: false,
+                                                           contentType: false
+
+                                                       }).done(function(data){
+                                                            $.alert('Successfully Saved');
+                                                            $("#name").val("");
+                                                            $("#ownername").val("");
+                                                            $("#contactnumber").val("");
+                                                            $("#blogweburl").val("");
+                                                            $("#history").val("");
+                                                            $("#capacityofchairs").val("");
+                                                            $("#completeaddress").val("");
+                                                            $("#latitude").val("");
+                                                            $("#longitude").val("");
+                                                            $("#username").val("");
+                                                            $("#password").val("");
+                                                            $("#confirmpassword").val("");
+                                             
+                                                       });
+                                        
+                                    }
+                                },
+                                cancel: function () {
+                                    $.alert('you clicked on <strong>cancel</strong>');
+                                },
+                            }
+                                    
+                        });
+
+
+                                   return false;
+                               });
+                        
+    // alert
+                    $('.example-p-1').on('click', function () {
+                        
+                        
+                        $.alert({
+                            title: '',
+                            closeIcon: true,
+                            type: 'blue',
+                            theme: 'material',
+                            content: '<center><h3>Login successfully</h3>',
+                            icon: 'glyphicon glyphicon-user',
+                            animation: 'scale',
+                            closeAnimation: 'scale',
+                            buttons: {
+                                okay: {
+                                    text: 'Okay',
+                                    btnClass: 'btn-blue'
+                                }
+                            }
+                        });
+                    });
+    
+    // confirmation
+//                    $('.sendbutton').on('click', function () {
+//                        
+//                        
+//                        
+//                    });
+//    
+    
+    
+    
+   
 });
 </script>
+   
 </body>
 
 </html>
